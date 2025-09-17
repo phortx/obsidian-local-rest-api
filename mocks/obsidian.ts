@@ -22,7 +22,7 @@ class DataAdapter {
   _read = "";
   _readBinary = new ArrayBuffer(0);
   _write: [string, string];
-  _writeBinary : [string, ArrayBuffer];
+  _writeBinary: [string, ArrayBuffer];
   _remove: [string];
   _stat = new Stat();
 
@@ -42,12 +42,12 @@ class DataAdapter {
     return this._readBinary;
   }
 
-  async write(path: string, content: string, option?:DataWriteOptions): Promise<void> {
+  async write(path: string, content: string, option?: DataWriteOptions): Promise<void> {
     this._write = [path, content];
   }
 
-  async writeBinary(path: string, content: ArrayBuffer, option?:DataWriteOptions): Promise<void> {
-    this._writeBinary = [path,content]
+  async writeBinary(path: string, content: ArrayBuffer, option?: DataWriteOptions): Promise<void> {
+    this._writeBinary = [path, content]
   }
 
   async remove(path: string): Promise<void> {
@@ -72,7 +72,7 @@ export class Vault {
     return this._cachedRead;
   }
 
-  async createFolder(path: string): Promise<void> {}
+  async createFolder(path: string): Promise<void> { }
 
   getFiles(): TFile[] {
     return this._files;
@@ -158,6 +158,7 @@ export class FileStats {
 
 export class TFile {
   path = "somefile.md";
+  basename: string = "somefile";
   stat: FileStats = new FileStats();
 }
 
@@ -165,7 +166,7 @@ export class PluginManifest {
   version = "";
 }
 
-export class SettingTab {}
+export class SettingTab { }
 
 export const apiVersion = "1.0.0";
 

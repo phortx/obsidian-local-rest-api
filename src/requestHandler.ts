@@ -262,10 +262,10 @@ export default class RequestHandler {
       certificateInfo:
         this.requestIsAuthenticated(req) && certificate
           ? {
-              validityDays: getCertificateValidityDays(certificate),
-              regenerateRecommended:
-                !getCertificateIsUptoStandards(certificate),
-            }
+            validityDays: getCertificateValidityDays(certificate),
+            regenerateRecommended:
+              !getCertificateIsUptoStandards(certificate),
+          }
           : undefined,
       apiExtensions: this.requestIsAuthenticated(req)
         ? this.apiExtensions.map(({ manifest }) => manifest)
@@ -997,7 +997,7 @@ export default class RequestHandler {
 
     for (const file of this.app.vault.getMarkdownFiles()) {
       const cachedContents = await this.app.vault.cachedRead(file);
-      const result = search(cachedContents);
+      const result = search(file.basename + "\n\n" + cachedContents);
       if (result) {
         const contextMatches: SearchContext[] = [];
         for (const match of result.matches) {
