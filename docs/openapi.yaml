@@ -1583,10 +1583,10 @@ paths:
                             properties:
                               end:
                                 type: "number"
-                                description: "Line number or 0 when the filename matched"
+                                description: "End character position of the match within the file. Starts with 0."
                               start:
                                 type: "number"
-                                description: "Line number or 0 when the filename matched"
+                                description: "Start character position of the match within the file. Starts with 0."
                               source:
                                 type: "string"
                                 description: "Where the search term matched: 'filename' or 'content'"

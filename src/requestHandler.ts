@@ -1010,26 +1010,28 @@ export default class RequestHandler {
       });
     }
 
-    // Below we virtually add the headline to the search text with 2 line breaks.
-    // That causes the start and end line numbers to be wrong with an offset of 2.
-    // This is fixed by substracting 2 from the start and end position.
-    const positionOffset = 2;
-
     for (const file of this.app.vault.getMarkdownFiles()) {
       const cachedContents = await this.app.vault.cachedRead(file);
 
       // Add the headline to the search text to include it in the search.
-      const result = search(file.basename + "\n\n" + cachedContents);
+      const filenamePrefix = file.basename + "\n\n";
+      const result = search(filenamePrefix + cachedContents);
+
+      // We added the headline to the search text with 2 line breaks.
+      // That causes the start and end position numbers to be wrong with an offset
+      // of the char length of the headline + 2 line breaks.
+      // This is fixed by substracting the positionOffset from the start and end position.
+      const positionOffset = filenamePrefix.length - 1;
 
       if (result) {
         const contextMatches: SearchContext[] = [];
         for (const match of result.matches) {
           if (match[0] == 0) {
-            // When start position is line 1, that means the search term matched within the headline.
+            // When start position is between 0 and positionOffset, that means the search term matched within the headline.
             contextMatches.push({
               match: {
-                start: 0,
-                end: 0,
+                start: match[0],
+                end: match[1],
                 source: "filename"
               },
               context: file.basename,
@@ -1048,8 +1050,6 @@ export default class RequestHandler {
               ),
             });
           }
-
-
         }
 
         results.push({
