@@ -997,8 +997,8 @@ export default class RequestHandler {
         errorCode: ErrorCode.InvalidSearch,
       });
     }
-    const contextLength: number =
-      parseInt(req.query.contextLength as string, 10) ?? 100;
+    const contextLengthRaw = parseInt(req.query.contextLength as string, 10);
+    const contextLength = Number.isNaN(contextLengthRaw) ? 100 : contextLengthRaw;
     let search: ReturnType<typeof prepareSimpleSearch>;
     try {
       search = prepareSimpleSearch(query);
@@ -1019,9 +1019,9 @@ export default class RequestHandler {
 
       // We added the headline to the search text with 2 line breaks.
       // That causes the start and end position numbers to be wrong with an offset
-      // of the char length of the headline + 2 line breaks.
+      // of the char length of the headline line breaks.
       // This is fixed by substracting the positionOffset from the start and end position.
-      const positionOffset = filenamePrefix.length - 1;
+      const positionOffset = filenamePrefix.length;
 
       if (result) {
         const contextMatches: SearchContext[] = [];
