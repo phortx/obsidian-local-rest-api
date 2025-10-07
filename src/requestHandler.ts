@@ -1011,9 +1011,9 @@ export default class RequestHandler {
     }
 
     // Below we virtually add the headline to the search text with 2 line breaks.
-    // That causes the start and end line numbers to be wrong with an offset of 3.
-    // This is fixed by substracting 3 from the start and end position.
-    const positionOffset = 3;
+    // That causes the start and end line numbers to be wrong with an offset of 2.
+    // This is fixed by substracting 2 from the start and end position.
+    const positionOffset = 2;
 
     for (const file of this.app.vault.getMarkdownFiles()) {
       const cachedContents = await this.app.vault.cachedRead(file);
@@ -1024,31 +1024,32 @@ export default class RequestHandler {
       if (result) {
         const contextMatches: SearchContext[] = [];
         for (const match of result.matches) {
-          let matchDetails;
-
-          if (match[0] == 1) {
+          if (match[0] == 0) {
             // When start position is line 1, that means the search term matched within the headline.
-            matchDetails = {
-              start: 1,
-              end: 1,
-              source: "filename"
-            }
+            contextMatches.push({
+              match: {
+                start: 0,
+                end: 0,
+                source: "filename"
+              },
+              context: file.basename,
+            });
           } else {
             // Otherwise, the match was in the content
-            matchDetails = {
-              start: match[0] - positionOffset,
-              end: match[1] - positionOffset,
-              source: "content"
-            }
+            contextMatches.push({
+              match: {
+                start: match[0] - positionOffset,
+                end: match[1] - positionOffset,
+                source: "content"
+              },
+              context: cachedContents.slice(
+                Math.max(match[0] - contextLength, positionOffset),
+                match[1] + contextLength
+              ),
+            });
           }
 
-          contextMatches.push({
-            match: matchDetails,
-            context: cachedContents.slice(
-              Math.max(match[0] - contextLength, 0),
-              match[1] + contextLength
-            ),
-          });
+
         }
 
         results.push({
