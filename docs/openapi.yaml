@@ -1583,11 +1583,17 @@ paths:
                             properties:
                               end:
                                 type: "number"
+                                description: "Line number or 0 when the filename matched"
                               start:
                                 type: "number"
+                                description: "Line number or 0 when the filename matched"
+                              source:
+                                type: "string"
+                                description: "Where the search term matched: 'filename' or 'content'"
                             required:
                               - "start"
                               - "end"
+                              - "source"
                             type: "object"
                         required:
                           - "match"
